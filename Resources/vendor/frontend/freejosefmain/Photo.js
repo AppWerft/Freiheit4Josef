@@ -66,7 +66,7 @@ Apiomat.Photo.prototype.getSimpleName = function() {
 };
 
 Apiomat.Photo.prototype.getModuleName = function() {
-    return "Josef0Main";
+    return "FreeJosefMain";
 };
 
 /* easy getter and setter */

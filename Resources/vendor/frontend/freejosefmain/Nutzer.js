@@ -105,19 +105,19 @@ Apiomat.Nutzer = function() {
     };
     /* referenced object methods */
     
-    var myphotos = [];
+    var myPhotos = [];
     
-    this.getMyphotos = function() 
+    this.getMyPhotos = function() 
     {
-        return myphotos;
+        return myPhotos;
     };
     
-    this.loadMyphotos = function(query,callback) 
+    this.loadMyPhotos = function(query,callback) 
     {
-        var refUrl = this.data.myphotosHref;
+        var refUrl = this.data.myPhotosHref;
         Apiomat.Datastore.getInstance().loadFromServer(refUrl, {
             onOk : function(obj) {
-                myphotos = obj;
+                myPhotos = obj;
                 callback.onOk();
             },
             onError : function(error) {
@@ -126,7 +126,7 @@ Apiomat.Nutzer = function() {
         }, undefined, query, Apiomat.Photo);
     };
     
-    this.postMyphotos = function(_refData, _callback) 
+    this.postMyPhotos = function(_refData, _callback) 
     {
         if(_refData == false || typeof _refData.getHref() === 'undefined') {
             var error = new Apiomat.ApiomatRequestError(Apiomat.Status.SAVE_REFERENECE_BEFORE_REFERENCING);
@@ -141,11 +141,11 @@ Apiomat.Nutzer = function() {
             onOk : function(refHref) {
                 if (refHref) {
                                     /* only add reference data if not already in local list */
-                    if(myphotos.filter(function(_elem) {
+                    if(myPhotos.filter(function(_elem) {
                         return _elem.getHref() && refHref && _elem.getHref() === refHref;
                     }).length < 1)
                     {
-                        myphotos.push(_refData);
+                        myPhotos.push(_refData);
                     } 
                                 }
                 if (_callback && _callback.onOk) {
@@ -160,24 +160,24 @@ Apiomat.Nutzer = function() {
         };
          if(Apiomat.Datastore.getInstance().shouldSendOffline("POST"))
         {
-            Apiomat.Datastore.getInstance( ).sendOffline( "POST", this.getHref(), _refData, "myphotos", callback );
+            Apiomat.Datastore.getInstance( ).sendOffline( "POST", this.getHref(), _refData, "myPhotos", callback );
         }
         else
         {
-            Apiomat.Datastore.getInstance().postOnServer(_refData, callback, this.data.myphotosHref);
+            Apiomat.Datastore.getInstance().postOnServer(_refData, callback, this.data.myPhotosHref);
         }
     };
     
-    this.removeMyphotos = function(_refData, _callback) 
+    this.removeMyPhotos = function(_refData, _callback) 
     {
         var id = _refData.getHref().substring(_refData.getHref().lastIndexOf("/") + 1);
-        var deleteHref = this.data.myphotosHref + "/" + id;
+        var deleteHref = this.data.myPhotosHref + "/" + id;
         var callback = {
             onOk : function(obj) {
                             /* Find and remove reference from local list */
-                var i = myphotos.indexOf(_refData);
+                var i = myPhotos.indexOf(_refData);
                 if(i != -1) {
-                    myphotos.splice(i, 1);
+                    myPhotos.splice(i, 1);
                 }
             ;                 
                 if (_callback && _callback.onOk) {
@@ -194,8 +194,8 @@ Apiomat.Nutzer = function() {
     };    
 };
 /* static constants */
-Apiomat.Nutzer.AOMBASEURL = "https://apiomat.org/yambas/rest/apps/Josef0";
-Apiomat.Nutzer.AOMAPIKEY = "6959609056717720206";
+Apiomat.Nutzer.AOMBASEURL = "https://apiomat.org/yambas/rest/apps/FreeJosef";
+Apiomat.Nutzer.AOMAPIKEY = "7462535499043681208";
 Apiomat.Nutzer.AOMSYS = "LIVE";
 Apiomat.Nutzer.AOMSDKVERSION = "1.11-113";
 /* static methods */
@@ -230,18 +230,18 @@ Apiomat.Nutzer.prototype.getSimpleName = function() {
 };
 
 Apiomat.Nutzer.prototype.getModuleName = function() {
-    return "Josef0Main";
+    return "FreeJosefMain";
 };
 
 /* easy getter and setter */
 
-        Apiomat.Nutzer.prototype.getMyphotos = function() 
+        Apiomat.Nutzer.prototype.getMyPhotos = function() 
 {
-    return this.data.myphotos;
+    return this.data.myPhotos;
 };
 
-Apiomat.Nutzer.prototype.setMyphotos = function(_myphotos) {
-    this.data.myphotos = _myphotos;
+Apiomat.Nutzer.prototype.setMyPhotos = function(_myPhotos) {
+    this.data.myPhotos = _myPhotos;
 };
 })(typeof exports === 'undefined' ? Apiomat
         : exports);

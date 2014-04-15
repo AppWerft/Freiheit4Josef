@@ -29,7 +29,7 @@ ApiomatAdapter.prototype.loginUser = function() {
 	//that.getAllWatchedVideos();
 	this.user.loadMe({
 		onOk : function() {
-			that.user.loadMyphotos("order by createdAt", {
+			/*that.user.loadMyphotos("order by createdAt", {
 				onOk : function() {
 					if (loaded == true)
 						return;
@@ -37,13 +37,11 @@ ApiomatAdapter.prototype.loginUser = function() {
 					if (Ti.Android) {
 					} else {
 					}
-					console.log('User getFav OK');
-
 				},
 				onError : function(_err) {
 					console.log(_err);
 				}
-			});
+			});*/
 		},
 		onError : function(error) {
 			that.user.save(saveCB);
@@ -56,13 +54,19 @@ ApiomatAdapter.prototype.loginUser = function() {
 ApiomatAdapter.prototype.postPhoto = function(_args, _callbacks) {
 	var that = this;
 	var myNewPhoto = new Apiomat.Photo();
-	myNewPhoto.setLocationLatitude(_args.latitude); // from getPosition
+	myNewPhoto.setLocationLatitude(_args.latitude);
+	// from getPosition
 	myNewPhoto.setLocationLongitude(_args.longitude);
-	myNewPhoto.postPhoto(_args.photo);  // ti.blob from camera
+	myNewPhoto.setTitle(_args.title);
+	myNewPhoto.postPhoto(_args.photo);
+	// ti.blob from camera
 	myNewPhoto.save({
 		onOK : function() {
 			that.user.postmyNewPhotos(myNewPhoto, {
 				onOK : function() {
+					Ti.Android && Ti.UI.createNotification({
+						message : 'Photo erfolgreich gespeichert.'
+					}).show();
 					console.log('Info: photo uploaded');
 				},
 				onError : function() {
@@ -72,21 +76,20 @@ ApiomatAdapter.prototype.postPhoto = function(_args, _callbacks) {
 		onError : function() {
 		}
 	});
-	
+
 };
 
 ApiomatAdapter.prototype.getAllPhotos = function(_args, _callbacks) {
-	Apiomat.Photo.getPhotos("order by createdAt limit 100", {
+	Apiomat.Photo.getPhotos("order by createdAt limit 500", {
 		onOk : function(_res) {
 			var bar = [];
-			console.log(_res);
 			for (var i = 0; i < _res.length; i++) {
 				bar.push({
 					latitude : _res[i].getLocationLatitude(),
 					longitude : _res[i].getLocationLongitude(),
 					title : _res[i].getTitle(),
-					thumb : _res[i].getPhotoURL(100, 100,null,null,'png'),
-					image : _res[i].getPhotoURL(800, 800,null,null,'png'),
+					thumb : _res[i].getPhotoURL(100, 100, null, null, 'png'),
+					bigimage : _res[i].getPhotoURL(800, 800, null, null, 'png') ,
 				});
 			}
 			_callbacks.onload(bar);

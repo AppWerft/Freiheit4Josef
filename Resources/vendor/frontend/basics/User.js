@@ -105,8 +105,8 @@ Apiomat.User = function() {
     /* referenced object methods */
 };
 /* static constants */
-Apiomat.User.AOMBASEURL = "https://apiomat.org/yambas/rest/apps/Josef0";
-Apiomat.User.AOMAPIKEY = "6959609056717720206";
+Apiomat.User.AOMBASEURL = "https://apiomat.org/yambas/rest/apps/FreeJosef";
+Apiomat.User.AOMAPIKEY = "7462535499043681208";
 Apiomat.User.AOMSYS = "LIVE";
 Apiomat.User.AOMSDKVERSION = "1.11-113";
 /* static methods */

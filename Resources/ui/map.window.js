@@ -32,14 +32,14 @@ exports.create = function() {
 				var pindata;
 				var annotations = [];
 				while ( pindata = _data.pop()) {
-					annotations.push(require('ui/annotation.widget').create(pindata));
+					if (pindata.thumb)
+						annotations.push(require('ui/annotation.widget').create(pindata));
 				}
 				self.mapview.addAnnotations(annotations);
-
+				self.mapview.selectAnnotation(annotations[0]);
 				Ti.UI.createNotification({
-					message : pins.length + ' Photos'
+					message : annotations.length + ' Photos'
 				}).show();
-
 			}
 		});
 

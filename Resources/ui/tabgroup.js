@@ -12,7 +12,13 @@ exports.create = function() {
 		title : 'Soli-Karte',
 		window : require('ui/map.window').create()
 	});
+	var tab3 = Titanium.UI.createTab({
+		title : 'Bilder',
+		window : require('ui/list.window').create()
+	});
 	self.addTab(tab2);
+	self.addTab(tab3);
+	
 	self.addTab(tab1);
 	self.addEventListener('open', function() {
 		if (!Ti.Android)

@@ -5,11 +5,13 @@ exports.create = function() {
 				Ti.Geolocation.getCurrentPosition(function(_res) {
 					if (!_res.error && _res.success) {
 						console.log(_res);
-						Ti.App.Apiomat.postPhoto({
+						require('ui/dialog.widget').create({
 							photo : event.media,
 							title : 'mein Titel',
 							latitude : _res.coords.latitude,
 							longitude : _res.coords.longitude
+						}, function(_data) {
+							Ti.App.Apiomat.postPhoto(_data);
 						});
 					}
 				});
