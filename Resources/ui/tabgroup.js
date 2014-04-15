@@ -1,25 +1,27 @@
 exports.create = function() {
 	var self = Titanium.UI.createTabGroup({
-		title : 'Freedom4Josef',
 		fullscreen : true,
+		exitOnClose : true,
 		backgroundImage : 'default.png'
 	});
-	var tab1 = Titanium.UI.createTab({
-		title : 'Blog',
-		window : require('ui/wordpress.window').create()
-	});
-	var tab2 = Titanium.UI.createTab({
+
+	self.addTab(Ti.UI.createTab({
 		title : 'Soli-Karte',
 		window : require('ui/map.window').create()
-	});
-	var tab3 = Titanium.UI.createTab({
+	}));
+	self.addTab(Ti.UI.createTab({
 		title : 'Bilder',
 		window : require('ui/list.window').create()
-	});
-	self.addTab(tab2);
-	self.addTab(tab3);
-	
-	self.addTab(tab1);
+	}));
+
+	self.addTab(Ti.UI.createTab({
+		title : 'Blog',
+		window : require('ui/wordpress.window').create()
+	}));
+	self.addTab(Ti.UI.createTab({
+		title : 'Twitter',
+		window : require('ui/twitter/window').create()
+	}));
 	self.addEventListener('open', function() {
 		if (!Ti.Android)
 			return;

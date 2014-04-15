@@ -14,22 +14,39 @@ exports.create = function() {
 	 return item;
 	 }*/
 	function getImage(_data) {
-		var self = Ti.UI.createImageView({
+		var w = Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor;
+
+		var self = Ti.UI.createView({
 			top : 0,
 			width : Ti.UI.FILL,
-			height : Ti.UI.SIZE,
+			height : w * 0.7,
+			bottom : 10
+		});
+		var photo = Ti.UI.createImageView({
+			width : Ti.UI.FILL,
+			height : Ti.UI.FILL,
 			image : _data.bigimage + '&_=.png'
 		});
-		ImageCache(_data.bigimage, self);
+		self.add(photo);
+		ImageCache(_data.bigimage, photo);
+		self.add(Ti.UI.createView({
+			backgroundColor : 'black',
+			opacity : 0.6,
+			height : 50,
+			bottom : 0
+		}));
 		self.add(Ti.UI.createLabel({
 			text : _data.title,
+			width : Ti.UI.FILL,
+			textAlign : 'left',
+			left : 10,
 			color : 'white',
 			font : {
 				fontSize : 24,
 				fontFamily : 'Libel Suit',
 				fontWeight : 'bold'
 			},
-			bottom : 2
+			bottom : 18
 		}));
 		return self;
 	}
@@ -43,6 +60,7 @@ exports.create = function() {
 		scrollType : 'vertical',
 		layout : 'vertical',
 		contentHeight : Ti.UI.SIZE,
+		backgroundColor : 'red'
 	});
 	self.add(self.container);
 	/*	self.listview = Ti.UI.createListView({
@@ -75,7 +93,6 @@ exports.create = function() {
 				self.container.removeAllChildren();
 				//var dataitems = [];
 				while ( img = _data.pop()) {
-					console.log(img);
 					if (img && img.bigimage) {
 						self.container.add(getImage(img));
 					}

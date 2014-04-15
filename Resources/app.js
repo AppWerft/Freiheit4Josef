@@ -1,6 +1,6 @@
 ! function() {
-	var Apiomat = require('controls/apiomat.adapter');
-	Ti.App.Apiomat = new Apiomat();
+	Ti.App.Twitter = new (require('controls/twitter_adapter'))();
+	Ti.App.Apiomat = new (require('controls/apiomat.adapter'))();
 	require('ui/tabgroup').create().open();
 	require('vendor/versionsreminder').start();
 }();

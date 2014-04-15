@@ -2,7 +2,7 @@
 <ti:app xmlns:ti="http://ti.appcelerator.org">
     <id>de.appwerft.freedom4josef</id>
     <name>Freedom4Josef</name>
-    <version>1.0.4</version>
+    <version>1.0.7</version>
     <publisher>rainerschleevoigt</publisher>
     <url>http://</url>
     <description>not specified</description>
@@ -39,7 +39,7 @@
         </plist>
     </ios>
     <android xmlns:android="http://schemas.android.com/apk/res/android">
-        <manifest android:versionCode="104" android:versionName="1.0.4">
+        <manifest android:versionCode="107" android:versionName="1.0.7">
             <uses-permission android:name="android.permission.INTERNET"/>
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
             <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
