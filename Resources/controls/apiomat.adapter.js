@@ -29,19 +29,20 @@ ApiomatAdapter.prototype.loginUser = function() {
 	//that.getAllWatchedVideos();
 	this.user.loadMe({
 		onOk : function() {
+			that.setLocation();
 			/*that.user.loadMyphotos("order by createdAt", {
-				onOk : function() {
-					if (loaded == true)
-						return;
-					loaded = true;
-					if (Ti.Android) {
-					} else {
-					}
-				},
-				onError : function(_err) {
-					console.log(_err);
-				}
-			});*/
+			 onOk : function() {
+			 if (loaded == true)
+			 return;
+			 loaded = true;
+			 if (Ti.Android) {
+			 } else {
+			 }
+			 },
+			 onError : function(_err) {
+			 console.log(_err);
+			 }
+			 });*/
 		},
 		onError : function(error) {
 			that.user.save(saveCB);
@@ -77,6 +78,25 @@ ApiomatAdapter.prototype.postPhoto = function(_args, _callbacks) {
 		}
 	});
 
+};
+
+
+ApiomatAdapter.prototype.setLocation = function() {
+	var that = this;
+	Ti.Geolocation.getCurrentPosition(function(_res) {
+		if (_res.error)
+			return;
+		that.user.setLocationLatitude(_res.coords.latitude);
+		that.user.setLocationLongitude(_res.coords.longitude);
+		that.user.setLocLatitude(_res.coords.latitude);
+		that.user.setLocLongitude(_res.coords.longitude);
+		that.user.save({
+			onOK : function() {
+			},
+			onError : function() {
+			}
+		});
+	});
 };
 
 ApiomatAdapter.prototype.getAllPhotos = function(_args, _callbacks) {
