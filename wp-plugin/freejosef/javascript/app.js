@@ -6,14 +6,12 @@ var saveCB = {
 };
 
 jQuery(document).ready(function() {
-	/* stuff mit leafletMap: */
 	function getPhotos() {
 		Apiomat.Photo.getPhotos("order by createdAt limit 500", {
 			onOk : function(_res) {
 				var josefIcon = L.icon({
 					iconUrl : '../wp-content/plugins/freejosef/images/high-pin.png',
-					iconSize : [32, 32] // size of the icon
-
+					iconSize : [32, 32] 
 				});
 				for (var i = 0; i < _res.length; i++) {
 					var marker = L.marker([_res[i].getLocationLatitude(), _res[i].getLocationLongitude()], {
@@ -28,7 +26,6 @@ jQuery(document).ready(function() {
 			}
 		});
 	}
-
 	if (jQuery('#josefmap').length) {
 		jQuery('#josefmap').css('width', '100%').css('height', '600px').css('margin-bottom', '25px');
 		jQuery('.headerimage,#secondary').remove();
