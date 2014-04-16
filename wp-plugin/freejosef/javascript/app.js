@@ -1,17 +1,27 @@
 var saveCB = {
 	onOk : function() {
+		console.log("saved");
+		//Now you can create objects of your class with this new user..
 	},
 	onError : function(error) {
+		console.log("Some error occured: (" + error.statusCode + ")" + error.message);
 	}
 };
-
+var done = false;
 jQuery(document).ready(function() {
 	function getPhotos() {
+		var timer = setTimeout(function() {
+			if (!done)
+				alert('Der verwendete Browser ist für die Darstellung der Karte nicht geeignet.');
+		}, 15000);
 		Apiomat.Photo.getPhotos("order by createdAt limit 500", {
 			onOk : function(_res) {
+				done = true;
+				clearTimeout(timer);
 				var josefIcon = L.icon({
 					iconUrl : '../wp-content/plugins/freejosef/images/high-pin.png',
-					iconSize : [32, 32] 
+					iconSize : [32, 32] // size of the icon
+
 				});
 				for (var i = 0; i < _res.length; i++) {
 					var marker = L.marker([_res[i].getLocationLatitude(), _res[i].getLocationLongitude()], {
@@ -26,14 +36,14 @@ jQuery(document).ready(function() {
 			}
 		});
 	}
+
 	if (jQuery('#josefmap').length) {
 		jQuery('#josefmap').css('width', '100%').css('height', '600px').css('margin-bottom', '25px');
 		jQuery('.headerimage,#secondary').remove();
 		jQuery('#content,#main').css('width', '100%');
 		var osm_mapnik = new L.tileLayer('http://services.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', {
 			attribution : 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC',
-			maxZoom : 16,
-			detectRetina : true
+			maxZoom : 16
 		});
 		var map = L.map('josefmap').setView([52.6, 10], 7);
 		map.addLayer(osm_mapnik);
