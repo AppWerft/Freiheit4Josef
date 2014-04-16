@@ -2,7 +2,6 @@ exports.create = function() {
 	var options = arguments[0] || {};
 	var self = Ti.UI.createWindow({
 		fullscreen : true,
-		
 		barColor : '#CF6500',
 		title : options.title
 	});
