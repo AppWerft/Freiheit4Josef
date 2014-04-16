@@ -4,7 +4,7 @@
  * Author: Rainer Schleevoigt
  * Version: 0.3
  * plugin uri: http://wordpress.org/extend/plugins/freejosef/
- * description: Dieses Plugin bindet die Solikarte ein.
+ * description: Dieses Plugin bindet die Solikarte ein. Wie geht das? In die Seite bindest Du folgenden Code ein: &lt;div id="josefmap" &gt;&lt;/div&gt;
  * author uri: http://hamburger-appwerft.de
  */
 
