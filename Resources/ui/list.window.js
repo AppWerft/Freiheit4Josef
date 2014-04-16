@@ -13,9 +13,9 @@ exports.create = function() {
 	 ImageCache(_pindata.image, item.image);
 	 return item;
 	 }*/
+	var lastid = null;
 	function getImage(_data) {
 		var w = Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor;
-
 		var self = Ti.UI.createView({
 			top : 0,
 			width : Ti.UI.FILL,
@@ -90,11 +90,17 @@ exports.create = function() {
 		Ti.App.Apiomat.getAllPhotos(null, {
 			onload : function(_data) {
 				var pindata;
+				if (lastid && _data[_data.length - 1].thumb == lastid)
+					return;
 				self.container.removeAllChildren();
 				//var dataitems = [];
+				var ndx = 0;
 				while ( img = _data.pop()) {
 					if (img && img.bigimage) {
+						if (ndx == 0)
+							lastid = img.thumb;
 						self.container.add(getImage(img));
+						ndx++;
 					}
 				}
 				//self.listview.sections[0].setItems(dataitems);

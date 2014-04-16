@@ -94,60 +94,21 @@ exports.create = function(_user) {
 		xhr.open('GET', _user['profile_background_image_url']);
 		xhr.send();
 	}
+	self.addEventListener('open', function() {
+		if (!Ti.Android)
+			return;
+		self.getActivity().onCreateOptionsMenu = function(e) {
+			e.menu.add({
+				title : "Mail",
+				showAsAction : Ti.Android.SHOW_AS_ACTION_ALWAYS,
+				itemId : 0,
+				visible : true,
+				icon : Ti.App.Android.R.drawable.ic_action_email
+			}).addEventListener("click", function() {
+		//				require('ui/camera.widget').create();
+			});
+		};
+	});
 	return self;
 };
-var a = {
-	"title" : {
-		"location" : "Hamburg  – St. Pauli",
-		"default_profile" : false,
-		"profile_background_tile" : false,
-		"statuses_count" : 627,
-		"lang" : "de",
-		"profile_link_color" : "0084B4",
-		"id" : 99730267,
-		"following" : null,
-		"favourites_count" : 5,
-		"protected" : false,
-		"profile_text_color" : "333333",
-		"contributors_enabled" : false,
-		"verified" : false,
-		"description" : "iPhone- und Androidentwicklung aus einer Hand, Titanium Certified App Developer, Titan",
-		"profile_sidebar_border_color" : "C0DEED",
-		"name" : "Rainer Schleevoigt",
-		"profile_background_color" : "C0DEED",
-		"created_at" : "Sun Dec 27 15:49:20 +0000 2009",
-		"is_translation_enabled" : false,
-		"default_profile_image" : false,
-		"followers_count" : 104,
-		"profile_image_url_https" : "https://pbs.twimg.com/profile_images/435000366095036416/qPVLH03V_normal.png",
-		"geo_enabled" : true,
-		"profile_background_image_url" : "http://pbs.twimg.com/profile_background_images/537143575/twitter.jpg",
-		"profile_background_image_url_https" : "https://pbs.twimg.com/profile_background_images/537143575/twitter.jpg",
-		"follow_request_sent" : null,
-		"entities" : {
-			"description" : {
-				"urls" : []
-			},
-			"url" : {
-				"urls" : [{
-					"display_url" : "hamburger-appwerft.de",
-					"expanded_url" : "http://hamburger-appwerft.de",
-					"indices" : [0, 22],
-					"url" : "http://t.co/JgEkal5xSg"
-				}]
-			}
-		},
-		"url" : "http://t.co/JgEkal5xSg",
-		"utc_offset" : 7200,
-		"time_zone" : "Berlin",
-		"notifications" : null,
-		"profile_use_background_image" : true,
-		"friends_count" : 136,
-		"profile_sidebar_fill_color" : "D6ABA0",
-		"screen_name" : "kontaktschmied",
-		"id_str" : "99730267",
-		"profile_image_url" : "http://pbs.twimg.com/profile_images/435000366095036416/qPVLH03V_normal.png",
-		"is_translator" : false,
-		"listed_count" : 15
-	}
-};
+
