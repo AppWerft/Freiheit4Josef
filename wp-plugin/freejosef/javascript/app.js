@@ -10,7 +10,30 @@ var saveCB = {
 
 function Init() {
 	/* stuff mit leafletMap: */
-	jQuery('#josefmap').css('width', '100%').css('height', '600px').css('margin-bottom','25px');
+	function getPhotos() {
+		Apiomat.Photo.getPhotos("order by createdAt limit 500", {
+			onOk : function(_res) {
+				var josefIcon = L.icon({
+					iconUrl : '../wp-content/plugins/freejosef/images/high-pin.png',
+					iconSize : [32, 32] // size of the icon
+
+				});
+				for (var i = 0; i < _res.length; i++) {
+					var marker = L.marker([_res[i].getLocationLatitude(), _res[i].getLocationLongitude()], {
+						icon : josefIcon
+					}).addTo(map).bindPopup('<div class="leafletpopup" width="360px"><img width="300" src="' + _res[i].getPhotoURL(320, 240, null, null, 'png') + '" /></div>');
+				}
+				map.spin(false);
+			},
+			onError : function(error) {
+				map.spin(false);
+				alert('Keine Verbindung zum Photodepot.\n' + error);
+			}
+		});
+	}
+
+
+	jQuery('#josefmap').css('width', '100%').css('height', '600px').css('margin-bottom', '25px');
 	jQuery('.headerimage').hide();
 	jQuery('#secondary').remove();
 	jQuery('#content,#main').css('width', '100%');
@@ -30,55 +53,20 @@ function Init() {
 	});
 	var map = L.map('josefmap').setView([52.6, 10], 7);
 	map.addLayer(osm_mapnik);
-	
-	jQuery("#josefmap" ).append('<img src="../wp-content/plugins/freejosef/images/spinner.gif" />' );
-	
-	
+	map.spin(true);
+	jQuery("#josefmap").append('<img src="../wp-content/plugins/freejosef/images/spinner.gif" />');
+
 	/* Create a new member/user of your app */
 	var myNutzer = new Apiomat.Nutzer();
-	myNutzer.setUserName("webuser" + new Date().getTime());
+	myNutzer.setUserName("anonymouswebuser");
 	myNutzer.setPassword("secret");
-
-	/* configure datastore with member credentials */
 	Apiomat.Datastore.configure(myNutzer);
-	/* and save it */
 	myNutzer.save(saveCB);
-
-	/* Later on you may want to reload myNutzer */
 	myNutzer.loadMe({
-		onOk : function() {
-			//Now you can do sth with loaded object
-		},
-		onError : function(error) {
-			//handle error
-		}
+		onOk : getPhotos,
+		onError : getPhotos
 	});
-	var josefIcon = L.icon({
-		iconUrl : '../wp-content/plugins/freejosef/images/high-pin.png',
 
-		iconSize : [32, 32] // size of the icon
-
-	});
-	Apiomat.Photo.getPhotos("order by createdAt limit 500", {
-		onOk : function(_res) {
-			var bar = [];
-			for (var i = 0; i < _res.length; i++) {
-				var marker = L.marker([_res[i].getLocationLatitude(), _res[i].getLocationLongitude()], {
-					icon : josefIcon
-				}).addTo(map).bindPopup('<div class="leafletpopup" width="360px"><img width="300" src="' + _res[i].getPhotoURL(320, 240, null, null, 'png') + '" /></div>');
-				bar.push({
-					latitude : _res[i].getLocationLatitude(),
-					longitude : _res[i].getLocationLongitude(),
-					title : _res[i].getTitle(),
-					thumb : _res[i].getPhotoURL(100, 100, null, null, 'png'),
-					bigimage : _res[i].getPhotoURL(800, 800, null, null, 'png') ,
-				});
-			}
-		},
-		onError : function(error) {
-			//handle error
-		}
-	});
 }
 
 
