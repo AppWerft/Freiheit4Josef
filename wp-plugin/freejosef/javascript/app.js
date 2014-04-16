@@ -12,33 +12,31 @@ function Init() {
 	/* stuff mit leafletMap: */
 	function getPhotos() {
 		Apiomat.Photo.getPhotos("order by createdAt limit 500", {
-			onOk : function(_res) {
-				var josefIcon = L.icon({
-					iconUrl : '../wp-content/plugins/freejosef/images/high-pin.png',
-					iconSize : [32, 32] // size of the icon
+				onOk : function(_res) {
+					var josefIcon = L.icon({
+						iconUrl : '../wp-content/plugins/freejosef/images/high-pin.png',
+						iconSize : [32, 32] // size of the icon
 
-				});
-				for (var i = 0; i < _res.length; i++) {
-					var marker = L.marker([_res[i].getLocationLatitude(), _res[i].getLocationLongitude()], {
-						icon : josefIcon
-					}).addTo(map).bindPopup('<div class="leafletpopup" width="360px"><img width="300" src="' + _res[i].getPhotoURL(320, 240, null, null, 'png') + '" /></div>');
+					});
+					for (var i = 0; i < _res.length; i++) {
+						var marker = L.marker([_res[i].getLocationLatitude(), _res[i].getLocationLongitude()], {
+							icon : josefIcon
+						}).addTo(map).bindPopup('<div class="leafletpopup" width="360px"><img width="300" src="' + _res[i].getPhotoURL(320, 240, null, null, 'png') + '" /></div>');
+					}
+					map.spin(false);
+				},
+				onError : function(error) {
+					map.spin(false);
+					alert('Keine Verbindung zum Photodepot.\n' + error);
 				}
-				map.spin(false);
-			},
-			onError : function(error) {
-				map.spin(false);
-				alert('Keine Verbindung zum Photodepot.\n' + error);
-			}
-		});
-	}
-
-
-	jQuery('#josefmap').css('width', '100%').css('height', '600px').css('margin-bottom', '25px');
-	jQuery('.headerimage').hide();
-	jQuery('#secondary').remove();
-	jQuery('#content,#main').css('width', '100%');
-	var watercolor = new L.TileLayer("http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg", {
-		maxZoom : 17,
+			});}
+	if (jQuery('#josefmap').length)  {
+		jQuery('#josefmap').css('width', '100%').css('height', '600px').css('margin-bottom', '25px');
+		jQuery('.headerimage').hide();
+		jQuery('#secondary').remove();
+		jQuery('#content,#main').css('width', '100%');
+		var watercolor = new L.TileLayer("http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg", {
+			maxZoom : 17,
 		minZoom : 1,
 		tms : false,
 		errorTileUrl : "http://www.mapsmarker.com/wp-content/plugins/leaflet-maps-marker/inc/img/error-tile-image.png",
@@ -62,10 +60,11 @@ function Init() {
 	myNutzer.setPassword("secret");
 	Apiomat.Datastore.configure(myNutzer);
 	myNutzer.save(saveCB);
-	myNutzer.loadMe({
+		myNutzer.loadMe({
 		onOk : getPhotos,
 		onError : getPhotos
-	});
+		});
+	}
 
 }
 
