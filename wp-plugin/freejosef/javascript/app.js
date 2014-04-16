@@ -33,19 +33,10 @@ function Init() {
 		jQuery('#josefmap').css('width', '100%').css('height', '600px').css('margin-bottom', '25px');
 		jQuery('.headerimage,#secondary').remove();
 		jQuery('#content,#main').css('width', '100%');
-		var watercolor = new L.TileLayer("http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg", {
-			maxZoom : 17,
-			minZoom : 1,
-			tms : false,
-			errorTileUrl : "http://www.mapsmarker.com/wp-content/plugins/leaflet-maps-marker/inc/img/error-tile-image.png",
-			attribution : "Map: Map tiles: <a href=\"http://stamen.com\" target=\"_blank\">Stamen Design</a>, <a href=\"http://creativecommons.org/licenses/by/3.0\" target=\"_blank\">CC BY 3.0</a>. Data: <a href=\"http://openstreetmap.org\" target=\"_blank\">OpenStreetMap</a>, <a href=\"http://creativecommons.org/licenses/by-sa/3.0\" target=\"_blank\">CC BY SA</a>",
-			continuousWorld : false,
-			noWrap : false,
-			detectRetina : true
-		});
 		var osm_mapnik = new L.tileLayer('http://services.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', {
 			attribution : 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC',
-			maxZoom : 16
+			maxZoom : 16,
+			detectRetina : true
 		});
 		var map = L.map('josefmap').setView([52.6, 10], 7);
 		map.addLayer(osm_mapnik);
