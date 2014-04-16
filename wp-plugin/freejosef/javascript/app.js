@@ -1,10 +1,7 @@
 var saveCB = {
 	onOk : function() {
-		console.log("saved");
-		//Now you can create objects of your class with this new user..
 	},
 	onError : function(error) {
-		console.log("Some error occured: (" + error.statusCode + ")" + error.message);
 	}
 };
 
@@ -53,8 +50,6 @@ function Init() {
 	map.addLayer(osm_mapnik);
 	map.spin(true);
 	jQuery("#josefmap").append('<img src="../wp-content/plugins/freejosef/images/spinner.gif" />');
-
-	/* Create a new member/user of your app */
 	var myNutzer = new Apiomat.Nutzer();
 	myNutzer.setUserName("anonymouswebuser");
 	myNutzer.setPassword("secret");
