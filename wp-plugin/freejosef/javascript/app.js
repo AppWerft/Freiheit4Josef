@@ -5,7 +5,7 @@ var saveCB = {
 	}
 };
 
-function Init() {
+jQuery(document).ready(function() {
 	/* stuff mit leafletMap: */
 	function getPhotos() {
 		Apiomat.Photo.getPhotos("order by createdAt limit 500", {
@@ -52,8 +52,4 @@ function Init() {
 			onError : getPhotos
 		});
 	}
-
-}
-
-
-jQuery(document).ready(Init);
+});
