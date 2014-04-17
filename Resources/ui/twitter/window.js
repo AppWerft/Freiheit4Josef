@@ -70,8 +70,8 @@ exports.create = function() {
 
 	self.onSwipe = function(_e) {
 		var deviceheight = Ti.Platform.displayCaps.platformHeight / Ti.Platform.displayCaps.logicalDensityFactor-100;
-		console.log(_e.y-100); // -100= actionbar + tabs
-		if (_e.direction == 'down' && _e.y-100 < deviceheight / 4) {
+		console.log((_e.y-100)/deviceheight); // -100= actionbar + tabs
+		if (_e.direction == 'down' && _e.y-100 < deviceheight) {
 			self.updateTweets();
 		}
 	};

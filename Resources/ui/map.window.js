@@ -51,6 +51,7 @@ exports.create = function() {
 		if (_e.annotation && (_e.clicksource == 'rightPane' || _e.clicksource == 'title' || _e.clicksource == 'subtitle')) {
 		}
 	});
+	self.addEventListener('blur', require('vendor/ratingreminder'));
 	return self;
 
 };
