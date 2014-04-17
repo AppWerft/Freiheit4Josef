@@ -17,6 +17,15 @@ var saveCB = {
 var ApiomatAdapter = function() {
 	var uid = (Ti.App.Properties.hasProperty('uid')) ? Ti.App.Properties.getString('uid') : Ti.Utils.md5HexDigest(Ti.Platform.getMacaddress());
 	Ti.App.Properties.setString('uid', uid);
+	Apiomat.Datastore.setOfflineStrategy(Apiomat.AOMOfflineStrategy.USE_OFFLINE_CACHE, {
+		onOk : function() {
+			console.log('Offline cache gestartet');
+		},
+		onError : function(err) {
+			//Error occurred
+		}
+	});
+
 	this.user = new Apiomat.Nutzer();
 	this.user.setUserName(uid);
 	this.user.setPassword('mylittlesecret');
@@ -63,11 +72,15 @@ ApiomatAdapter.prototype.postPhoto = function(_args, _callbacks) {
 	// ti.blob from camera
 	myNewPhoto.save({
 		onOK : function() {
+			Ti.Android && Ti.UI.createNotification({
+				message : 'Photo erhalten.'
+			}).show();
 			that.user.postmyNewPhotos(myNewPhoto, {
-				onOK : function() {
+				onOk : function() {
 					Ti.Android && Ti.UI.createNotification({
 						message : 'Photo erfolgreich gespeichert.'
 					}).show();
+					Ti.Media.vibrate();
 					console.log('Info: photo uploaded');
 				},
 				onError : function() {
@@ -80,6 +93,27 @@ ApiomatAdapter.prototype.postPhoto = function(_args, _callbacks) {
 
 };
 
+ApiomatAdapter.prototype.deletePhoto = function(_id, _callbacks) {
+	for (var i = 0; i < this.photos.length; i++) {
+		// only own phots has an id:
+		if (this.photos[i].data.id && this.photos[i].data.id == _id) {
+			this.photos[i].deleteModel({
+				onOk : function() {
+					Ti.Android && Ti.UI.createNotification({
+						message : 'Photo in Liste gelöscht'
+					}).show();
+					Ti.Media.vibrate();
+					_callbacks.ondeleted();
+					console.log('SUCCESSFUl deleted');
+				},
+				onError : function(error) {
+					console.log(error);
+				}
+			});
+			break;
+		}
+	}
+};
 
 ApiomatAdapter.prototype.setLocation = function() {
 	var that = this;
@@ -91,28 +125,47 @@ ApiomatAdapter.prototype.setLocation = function() {
 		that.user.setLocLatitude(_res.coords.latitude);
 		that.user.setLocLongitude(_res.coords.longitude);
 		that.user.save({
-			onOK : function() {
+			onOk : function() {
 			},
 			onError : function() {
 			}
 		});
 	});
 };
+ApiomatAdapter.prototype.resetLocation = function() {
+	var that = this;
+	that.user.setLocationLatitude(0);
+	that.user.setLocationLongitude(0);
+	that.user.setLocLatitude(0);
+	that.user.setLocLongitude(0);
+	that.user.save({
+		onOk : function() {
+		},
+		onError : function() {
+		}
+	});
+
+};
 
 ApiomatAdapter.prototype.getAllPhotos = function(_args, _callbacks) {
+	var that = this;
 	Apiomat.Photo.getPhotos("order by createdAt limit 500", {
 		onOk : function(_res) {
-			var bar = [];
-			for (var i = 0; i < _res.length; i++) {
-				bar.push({
-					latitude : _res[i].getLocationLatitude(),
-					longitude : _res[i].getLocationLongitude(),
-					title : _res[i].getTitle(),
-					thumb : _res[i].getPhotoURL(100, 100, null, null, 'png'),
-					bigimage : _res[i].getPhotoURL(800, 800, null, null, 'png') ,
+			that.photos = _res;
+			var photolist = [];
+			for (var i = 0; i < that.photos.length; i++) {
+				var photo = that.photos[i];
+				photolist.push({
+					id : (photo.data.ownerUserName == that.user.getUserName())//
+					? photo.data.id : undefined,
+					latitude : photo.getLocationLatitude(),
+					longitude : photo.getLocationLongitude(),
+					title : photo.getTitle(),
+					thumb : photo.getPhotoURL(100, 100, null, null, 'png'),
+					bigimage : photo.getPhotoURL(800, 800, null, null, 'png') ,
 				});
 			}
-			_callbacks.onload(bar);
+			_callbacks.onload(photolist);
 		},
 		onError : function(error) {
 			//handle error

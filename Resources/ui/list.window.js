@@ -40,17 +40,43 @@ exports.create = function() {
 			width : Ti.UI.FILL,
 			textAlign : 'left',
 			left : 10,
+			right : 50,
 			color : 'white',
 			font : {
-				fontSize : 24,
-				fontFamily : 'Libel Suit',
+				fontSize : 22,
+				fontFamily : 'Bebas',
 				fontWeight : 'bold'
 			},
 			bottom : 18
 		}));
+		if (_data.id) {
+			var trash = Ti.UI.createButton({
+				right : 5,
+				bottom : 0,
+				width : 50,
+				height : 50,
+				backgroundImage : '/assets/trash.png'
+			});
+			self.add(trash);
+			trash.addEventListener('click', function() {
+				var dialog = Ti.UI.createAlertDialog({
+					message : 'Du willst Dein Photo löschen?',
+					ok : 'Jawoll!',
+					title : 'Photo löschen'
+				});
+				dialog.show();
+				dialog.addEventListener('click', function(_e) {
+					if (_e.index == 0) {
+						Ti.App.Apiomat.deletePhoto(_data.id, {
+							ondeleted : updateView
+						});
+					}
+				});
+
+			});
+		}
 		return self;
 	}
-
 	var self = Ti.UI.createWindow({
 		fullscreen : true,
 		backgroundColor : 'white',

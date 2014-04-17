@@ -2,7 +2,7 @@ exports.create = function(tweet) {
 	var row = Ti.UI.createTableViewRow({
 		user : tweet.user,
 		tweet : tweet.text,
-		hasDetails : true,
+		hasDetail : true,
 		height : Ti.UI.SIZE
 	});
 	if (!tweet)
@@ -21,10 +21,11 @@ exports.create = function(tweet) {
 		}
 	}));
 	row.add(Ti.UI.createLabel({
-		text : tweet.text.replace(/&amp;/g,'&'),
+		text : tweet.text.replace(/&amp;/g, '&'),
 		top : '25dp',
 		bottom : '10dp',
 		left : '80dp',
+		right : 10,
 		right : '5dp',
 		color : 'black',
 		font : {

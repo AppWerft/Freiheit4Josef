@@ -2,7 +2,7 @@ module.exports = function(url, imageViewObject) {
 	if (!url || !imageViewObject)
 		return;
 	var filename = Ti.Utils.md5HexDigest(url) + '.png';
-	var file = Ti.Filesystem.getFile(Ti.Filesystem.applicationCacheDirectory, filename);
+	var file = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, filename);
 	if (file.exists() ==true) {
 		imageViewObject.image = file.nativePath;
 	} else {
