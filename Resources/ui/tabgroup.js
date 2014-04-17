@@ -30,6 +30,8 @@ exports.create = function() {
 			return;
 		activity.actionBar.setDisplayHomeAsUp(false);
 		activity.actionBar.setTitle('Freiheit für Josef!');
+		activity.actionBar.setSubtitle('Die Solidarität könnt ihr haben.');
+		
 		activity.onCreateOptionsMenu = function(e) {
 			if (Ti.Geolocation.locationServicesEnabled) {
 				Ti.Geolocation.purpose = 'Hole Deinen Standort';
