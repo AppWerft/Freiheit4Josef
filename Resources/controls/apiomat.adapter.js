@@ -162,7 +162,7 @@ ApiomatAdapter.prototype.getAllPhotos = function(_args, _callbacks) {
 					longitude : photo.getLocationLongitude(),
 					title : photo.getTitle(),
 					thumb : photo.getPhotoURL(100, 100, null, null, 'png'),
-					bigimage : photo.getPhotoURL(800, 800, null, null, 'png') ,
+					bigimage : photo.getPhotoURL(Ti.Platform.displayCaps.platformWidth,0.6*Ti.Platform.displayCaps.platformWidth, null, null, 'png') ,
 				});
 			}
 			_callbacks.onload(photolist);

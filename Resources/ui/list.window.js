@@ -1,4 +1,5 @@
 var ImageCache = require('vendor/imagecache');
+var titouchgallery = require("com.gbaldera.titouchgallery");
 exports.create = function() {
 	/*function getItem(_pindata) {
 	 var item = {
@@ -19,13 +20,11 @@ exports.create = function() {
 		var self = Ti.UI.createView({
 			top : 0,
 			width : Ti.UI.FILL,
-			height : w * 0.7,
+			height : w * 0.6,
 			bottom : 10
 		});
-		var photo = Ti.UI.createImageView({
-			width : Ti.UI.FILL,
-			height : Ti.UI.FILL,
-			image : _data.bigimage + '&_=.png'
+		var photo = titouchgallery.createTouchGallery({
+			images : [_data.bigimage]
 		});
 		self.add(photo);
 		ImageCache(_data.bigimage, photo);
@@ -77,6 +76,7 @@ exports.create = function() {
 		}
 		return self;
 	}
+
 	var self = Ti.UI.createWindow({
 		fullscreen : true,
 		backgroundColor : 'white',
