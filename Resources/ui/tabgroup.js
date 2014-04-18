@@ -13,7 +13,10 @@ exports.create = function() {
 		title : 'Bilder',
 		window : require('ui/list.window').create()
 	}));
-
+self.addTab(Ti.UI.createTab({
+		title : 'Klänge',
+		window : require('ui/audiorecorder.window').create()
+	}));
 	self.addTab(Ti.UI.createTab({
 		title : 'Blog',
 		window : require('ui/wordpress.window').create()
