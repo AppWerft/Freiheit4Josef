@@ -11,7 +11,7 @@ module.exports = function() {
 			r.addEventListener("click", function(t) {
 				switch(t.index) {
 					case 0:
-						Ti.App.Properties.setString("RemindToRate", Number.MAX_VALUE), Ti.Platform.openURL(Ti.Android ? "https://play.google.com/store/apps/details?id=de.appwerft.hoerspiel" : "URL TO YOUR APP IN THE ITUNES STORE");
+						Ti.App.Properties.setString("RemindToRate", Number.MAX_VALUE), Ti.Platform.openURL(Ti.Android ? "https://play.google.com/store/apps/details?id=de.appwerft.freedom4josef" : "URL TO YOUR APP IN THE ITUNES STORE");
 						break;
 					case 1:
 						Ti.App.Properties.setString("RemindToRate", e + 864e5);

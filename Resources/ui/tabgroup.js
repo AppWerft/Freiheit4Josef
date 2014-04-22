@@ -13,10 +13,10 @@ exports.create = function() {
 		title : 'Bilder',
 		window : require('ui/list.window').create()
 	}));
-self.addTab(Ti.UI.createTab({
-		title : 'Klänge',
-		window : require('ui/audiorecorder.window').create()
-	}));
+	/*self.addTab(Ti.UI.createTab({
+	 title : 'Klänge',
+	 window : require('ui/audiorecorder.window').create()
+	 }));*/
 	self.addTab(Ti.UI.createTab({
 		title : 'Blog',
 		window : require('ui/wordpress.window').create()
@@ -34,8 +34,17 @@ self.addTab(Ti.UI.createTab({
 		activity.actionBar.setDisplayHomeAsUp(false);
 		activity.actionBar.setTitle('Freiheit für Josef!');
 		activity.actionBar.setSubtitle('Unsre Solidarität - die könnt ihr haben.');
-		
+
 		activity.onCreateOptionsMenu = function(e) {
+			e.menu.add({
+				title : "Aufnahme",
+				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
+				itemId : 0,
+				visible : true,
+				icon : Ti.App.Android.R.drawable.ic_action_megafon
+			}).addEventListener("click", function() {
+				require('ui/audiorecorder.window').create().open();
+			});
 			if (Ti.Geolocation.locationServicesEnabled) {
 				Ti.Geolocation.purpose = 'Hole Deinen Standort';
 				Ti.Geolocation.getCurrentPosition(function(_res) {

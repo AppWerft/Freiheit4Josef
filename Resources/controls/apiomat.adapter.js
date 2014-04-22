@@ -39,19 +39,7 @@ ApiomatAdapter.prototype.loginUser = function() {
 	this.user.loadMe({
 		onOk : function() {
 			that.setLocation();
-			/*that.user.loadMyphotos("order by createdAt", {
-			 onOk : function() {
-			 if (loaded == true)
-			 return;
-			 loaded = true;
-			 if (Ti.Android) {
-			 } else {
-			 }
-			 },
-			 onError : function(_err) {
-			 console.log(_err);
-			 }
-			 });*/
+
 		},
 		onError : function(error) {
 			that.user.save(saveCB);
@@ -75,7 +63,7 @@ ApiomatAdapter.prototype.postPhoto = function(_args, _callbacks) {
 			Ti.Android && Ti.UI.createNotification({
 				message : 'Photo erhalten.'
 			}).show();
-			that.user.postmyNewPhotos(myNewPhoto, {
+			that.user.postmyPhotos(myNewPhoto, {
 				onOk : function() {
 					Ti.Android && Ti.UI.createNotification({
 						message : 'Photo erfolgreich gespeichert.'
@@ -91,6 +79,39 @@ ApiomatAdapter.prototype.postPhoto = function(_args, _callbacks) {
 		}
 	});
 
+};
+
+ApiomatAdapter.prototype.postAudio = function(_args, _callbacks) {
+	var that = this;
+	Ti.Geolocation.getCurrentPosition(function(_res) {
+		if (!_res.error && _res.success) {
+			var myNewAudio = new Apiomat.Audio();
+			myNewAudio.setLocationLatitude(_res.coords.latitude);
+			myNewAudio.setLocationLongitude(_res.coords.longitude);
+			myNewAudio.postRecord(_args.blob);
+			myNewAudio.save({
+				onOK : function() {
+					_callbacks.onload();
+					Ti.Android && Ti.UI.createNotification({
+						message : 'Sound erhalten.'
+					}).show();
+					that.user.postmyAudios(myNewAudio, {
+						onOk : function() {
+							Ti.Android && Ti.UI.createNotification({
+								message : 'Audio erfolgreich gespeichert.'
+							}).show();
+							Ti.Media.vibrate();
+							console.log('Info: audio uploaded');
+						},
+						onError : function() {
+						}
+					});
+				},
+				onError : function() {
+				}
+			});
+		}
+	});
 };
 
 ApiomatAdapter.prototype.deletePhoto = function(_id, _callbacks) {
@@ -162,7 +183,7 @@ ApiomatAdapter.prototype.getAllPhotos = function(_args, _callbacks) {
 					longitude : photo.getLocationLongitude(),
 					title : photo.getTitle(),
 					thumb : photo.getPhotoURL(100, 100, null, null, 'png'),
-					bigimage : photo.getPhotoURL(Ti.Platform.displayCaps.platformWidth,0.6*Ti.Platform.displayCaps.platformWidth, null, null, 'png') ,
+					bigimage : photo.getPhotoURL(Ti.Platform.displayCaps.platformWidth, 0.6 * Ti.Platform.displayCaps.platformWidth, null, null, 'png') ,
 				});
 			}
 			_callbacks.onload(photolist);

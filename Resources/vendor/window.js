@@ -3,7 +3,6 @@ exports.create = function() {
 	var self = Ti.UI.createWindow({
 		fullscreen : true,
 		barColor : '#CF6500',
-		title : options.title
 	});
 	if (Ti.Android) {
 		self.addEventListener("open", function() {
@@ -11,6 +10,8 @@ exports.create = function() {
 			if (activity && activity.actionBar) {
 				activity.actionBar.setDisplayHomeAsUp(true);
 				activity.actionBar.setTitle(options.title);
+				activity.actionBar.setSubtitle(options.subtitle);
+				
 				activity.actionBar.setLogo(options.logo);
 				activity.actionBar.onHomeIconItemSelected = function() {
 					self.close();
