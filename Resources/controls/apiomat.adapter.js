@@ -195,6 +195,32 @@ ApiomatAdapter.prototype.getAllPhotos = function(_args, _callbacks) {
 
 };
 
+ApiomatAdapter.prototype.getAllAudios = function(_args, _callbacks) {
+	var that = this;
+	Apiomat.Audio.getAudios("order by createdAt limit 500", {
+		onOk : function(_res) {
+			that.audios = _res;
+			var audiolist = [];
+			for (var i = 0; i < that.audios.length; i++) {
+				var audio = that.audios[i];
+				audiolist.push({
+					id : (audio.data.ownerUserName == that.user.getUserName())//
+					? audio.data.id : undefined,
+					latitude : audio.getLocationLatitude(),
+					longitude : audio.getLocationLongitude(),
+					//title : audio.getTitle(),
+					url : audio.getAudioURL() ,
+				});
+			}
+			_callbacks.onload(audiolist);
+		},
+		onError : function(error) {
+			//handle error
+		}
+	});
+
+};
+
 /// SETTER:
 
 module.exports = ApiomatAdapter;

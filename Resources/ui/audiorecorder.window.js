@@ -67,12 +67,11 @@ exports.create = function() {
 			fileName : "file",
 			maxDuration : DURATION,
 			success : function(e) {
+				self.progress.setValue(0);
 				self.megafon.show();
 				self.menu.items[0].visible = true;
 				self.menu.items[1].visible = true;
-
 				self.megafonred.hide();
-				Ti.API.info("response is => " + JSON.stringify(e));
 				self.megafonred.transform = Ti.UI.create2DMatrix({
 					scale : 1
 				});
@@ -82,6 +81,7 @@ exports.create = function() {
 			}
 		});
 		setTimeout(updateLevel, 500);
+		self.audioplayer.release();
 
 	});
 	self.addEventListener('focus', function() {
@@ -119,11 +119,16 @@ exports.create = function() {
 			}).addEventListener("click", function() {
 				self.menu.items[0].setVisible(false);
 				self.menu.items[1].setVisible(false);
-				Ti.App.Apiomat.postAudio({
-					blob : self.audiofile.read()
-				}, {
-					onload : function() {
-					}
+				require('ui/audiodialog.widget').create({
+					url : self.audiofile.nativePath
+				}, function(_data) {
+					Ti.App.Apiomat.postAudio({
+						blob : self.audiofile.read(),
+						title: _data.title
+					}, {
+						onload : function() {
+						}
+					});
 				});
 			});
 		};

@@ -42,6 +42,20 @@ exports.create = function() {
 				}).show();
 			}
 		});
+		Ti.App.Apiomat.getAllAudios(null, {
+			onload : function(_data) {
+				var pindata;
+				var annotations = [];
+				while ( pindata = _data.pop()) {
+					if (pindata.thumb)
+						annotations.push(require('ui/annotation.widget').create(pindata));
+				}
+				self.mapview.addAnnotations(annotations);
+				Ti.UI.createNotification({
+					message : annotations.length + ' Soundschnipsel'
+				}).show();
+			}
+		});
 
 	});
 	self.addEventListener('blur', function() {

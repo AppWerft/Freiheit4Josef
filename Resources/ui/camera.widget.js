@@ -5,7 +5,7 @@ exports.create = function() {
 				Ti.Geolocation.getCurrentPosition(function(_res) {
 					if (!_res.error && _res.success) {
 						console.log(_res);
-						require('ui/dialog.widget').create({
+						require('ui/cameradialog.widget').create({
 							photo : event.media,
 							title : 'mein Titel',
 							latitude : _res.coords.latitude,

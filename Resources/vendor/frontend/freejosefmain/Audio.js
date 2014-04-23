@@ -220,5 +220,14 @@ Apiomat.Audio.prototype.deleteRecord = function(_callback)
         Apiomat.Datastore.getInstance().deleteOnServer(imageHref, deleteCB);
     }
 };
+
+        Apiomat.Audio.prototype.getTitle = function() 
+{
+    return this.data.title;
+};
+
+Apiomat.Audio.prototype.setTitle = function(_title) {
+    this.data.title = _title;
+};
 })(typeof exports === 'undefined' ? Apiomat
         : exports);
