@@ -31,8 +31,8 @@ if(typeof goog !== 'undefined')
 {
     goog.provide('Apiomat.Nutzer');
     goog.require('Apiomat.User');
-    goog.require('Apiomat.Photo');
     goog.require('Apiomat.Audio');
+    goog.require('Apiomat.Photo');
 }
 if(typeof exports === 'undefined')
 {
@@ -105,6 +105,94 @@ Apiomat.Nutzer = function() {
         }
     };
     /* referenced object methods */
+    
+    var myAudios = [];
+    
+    this.getMyAudios = function() 
+    {
+        return myAudios;
+    };
+    
+    this.loadMyAudios = function(query,callback) 
+    {
+        var refUrl = this.data.myAudiosHref;
+        Apiomat.Datastore.getInstance().loadFromServer(refUrl, {
+            onOk : function(obj) {
+                myAudios = obj;
+                callback.onOk();
+            },
+            onError : function(error) {
+                callback.onError(error);
+            }
+        }, undefined, query, Apiomat.Audio);
+    };
+    
+    this.postMyAudios = function(_refData, _callback) 
+    {
+        if(_refData == false || typeof _refData.getHref() === 'undefined') {
+            var error = new Apiomat.ApiomatRequestError(Apiomat.Status.SAVE_REFERENECE_BEFORE_REFERENCING);
+            if (_callback && _callback.onError) {
+                    _callback.onError(error);
+            } else if(console && console.log) {
+                    console.log("Error occured: " + error);
+            }
+            return;
+        }
+        var callback = {
+            onOk : function(refHref) {
+                if (refHref) {
+                                    /* only add reference data if not already in local list */
+                    if(myAudios.filter(function(_elem) {
+                        return _elem.getHref() && refHref && _elem.getHref() === refHref;
+                    }).length < 1)
+                    {
+                        myAudios.push(_refData);
+                    } 
+                                }
+                if (_callback && _callback.onOk) {
+                    _callback.onOk();
+                }
+            },
+            onError : function(error) {
+                if (_callback && _callback.onError) {
+                    _callback.onError(error);
+                }
+            }
+        };
+         if(Apiomat.Datastore.getInstance().shouldSendOffline("POST"))
+        {
+            Apiomat.Datastore.getInstance( ).sendOffline( "POST", this.getHref(), _refData, "myAudios", callback );
+        }
+        else
+        {
+            Apiomat.Datastore.getInstance().postOnServer(_refData, callback, this.data.myAudiosHref);
+        }
+    };
+    
+    this.removeMyAudios = function(_refData, _callback) 
+    {
+        var id = _refData.getHref().substring(_refData.getHref().lastIndexOf("/") + 1);
+        var deleteHref = this.data.myAudiosHref + "/" + id;
+        var callback = {
+            onOk : function(obj) {
+                            /* Find and remove reference from local list */
+                var i = myAudios.indexOf(_refData);
+                if(i != -1) {
+                    myAudios.splice(i, 1);
+                }
+            ;                 
+                if (_callback && _callback.onOk) {
+                    _callback.onOk();
+                }
+            },
+            onError : function(error) {
+                if (_callback && _callback.onError) {
+                    _callback.onError(error);
+                }
+            }
+        };
+        Apiomat.Datastore.getInstance().deleteOnServer(deleteHref, callback);
+    };    
     
     var myPhotos = [];
     
@@ -180,84 +268,6 @@ Apiomat.Nutzer = function() {
                 if(i != -1) {
                     myPhotos.splice(i, 1);
                 }
-            ;                 
-                if (_callback && _callback.onOk) {
-                    _callback.onOk();
-                }
-            },
-            onError : function(error) {
-                if (_callback && _callback.onError) {
-                    _callback.onError(error);
-                }
-            }
-        };
-        Apiomat.Datastore.getInstance().deleteOnServer(deleteHref, callback);
-    };    
-    
-    var myAudios = undefined;
-    
-    this.getMyAudios = function() 
-    {
-        return myAudios;
-    };
-    
-    this.loadMyAudios = function(callback) 
-    {
-        var refUrl = this.data.myAudiosHref;
-        Apiomat.Datastore.getInstance().loadFromServer(refUrl, {
-            onOk : function(obj) {
-                myAudios = obj;
-                callback.onOk();
-            },
-            onError : function(error) {
-                callback.onError(error);
-            }
-        }, undefined, undefined, Apiomat.Audio);
-    };
-    
-    this.postMyAudios = function(_refData, _callback) 
-    {
-        if(_refData == false || typeof _refData.getHref() === 'undefined') {
-            var error = new Apiomat.ApiomatRequestError(Apiomat.Status.SAVE_REFERENECE_BEFORE_REFERENCING);
-            if (_callback && _callback.onError) {
-                    _callback.onError(error);
-            } else if(console && console.log) {
-                    console.log("Error occured: " + error);
-            }
-            return;
-        }
-        var callback = {
-            onOk : function(refHref) {
-                if (refHref) {
-                                    myAudios = _refData;
-                                }
-                if (_callback && _callback.onOk) {
-                    _callback.onOk();
-                }
-            },
-            onError : function(error) {
-                if (_callback && _callback.onError) {
-                    _callback.onError(error);
-                }
-            }
-        };
-         if(Apiomat.Datastore.getInstance().shouldSendOffline("POST"))
-        {
-            Apiomat.Datastore.getInstance( ).sendOffline( "POST", this.getHref(), _refData, "myAudios", callback );
-        }
-        else
-        {
-            Apiomat.Datastore.getInstance().postOnServer(_refData, callback, this.data.myAudiosHref);
-        }
-    };
-    
-    this.removeMyAudios = function(_refData, _callback) 
-    {
-        var id = _refData.getHref().substring(_refData.getHref().lastIndexOf("/") + 1);
-        var deleteHref = this.data.myAudiosHref + "/" + id;
-        var callback = {
-            onOk : function(obj) {
-                            myAudios = undefined
             ;                 
                 if (_callback && _callback.onOk) {
                     _callback.onOk();
@@ -360,15 +370,6 @@ Apiomat.Nutzer.prototype.setLocationLongitude = function(_longitude)
     this.data.location = locArr;
 };
 
-        Apiomat.Nutzer.prototype.getMyPhotos = function() 
-{
-    return this.data.myPhotos;
-};
-
-Apiomat.Nutzer.prototype.setMyPhotos = function(_myPhotos) {
-    this.data.myPhotos = _myPhotos;
-};
-
         Apiomat.Nutzer.prototype.getMyAudios = function() 
 {
     return this.data.myAudios;
@@ -376,6 +377,15 @@ Apiomat.Nutzer.prototype.setMyPhotos = function(_myPhotos) {
 
 Apiomat.Nutzer.prototype.setMyAudios = function(_myAudios) {
     this.data.myAudios = _myAudios;
+};
+
+        Apiomat.Nutzer.prototype.getMyPhotos = function() 
+{
+    return this.data.myPhotos;
+};
+
+Apiomat.Nutzer.prototype.setMyPhotos = function(_myPhotos) {
+    this.data.myPhotos = _myPhotos;
 };
 })(typeof exports === 'undefined' ? Apiomat
         : exports);

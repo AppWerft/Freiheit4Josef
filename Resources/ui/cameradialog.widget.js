@@ -4,10 +4,11 @@ exports.create = function(_args, _onOK) {
 		layout : 'vertical'
 
 	});
-	androidview.add(Ti.UI.createImageView({
+	var preview = Ti.UI.createImageView({
 		image : data.photo,
 		width : '50%'
-	}));
+	});
+	androidview.add(preview);
 	var title = Ti.UI.createTextField({
 		top : 0,
 		width : Ti.UI.FILL,
@@ -19,7 +20,7 @@ exports.create = function(_args, _onOK) {
 		cancel : 1,
 		androidView : androidview,
 		buttonNames : ['OK', 'Abbruch'],
-	//	message : 'Möchtest Du das Bild veröffentlichen?',
+		//	message : 'Möchtest Du das Bild veröffentlichen?',
 		title : 'Photoversand'
 	});
 	dialog.addEventListener('click', function(e) {
@@ -31,5 +32,8 @@ exports.create = function(_args, _onOK) {
 		}
 	});
 	dialog.show();
-
+	preview.addEventListener('postlayout', function(_e) {
+		data.ratio = _e.source.rect.width / _e.source.rect.height;
+		console.log(data.ratio);
+	});
 };

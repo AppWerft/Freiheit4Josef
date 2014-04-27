@@ -15,6 +15,11 @@ var saveCB = {
 // Constructor: ///////////////////////
 ///////////////////////////////////////
 var ApiomatAdapter = function() {
+
+};
+
+ApiomatAdapter.prototype.loginUser = function(_callbacks) {
+	var that = this;
 	var uid = (Ti.App.Properties.hasProperty('uid')) ? Ti.App.Properties.getString('uid') : Ti.Utils.md5HexDigest(Ti.Platform.getMacaddress());
 	Ti.App.Properties.setString('uid', uid);
 	Apiomat.Datastore.setOfflineStrategy(Apiomat.AOMOfflineStrategy.USE_OFFLINE_CACHE, {
@@ -25,15 +30,9 @@ var ApiomatAdapter = function() {
 			//Error occurred
 		}
 	});
-
 	this.user = new Apiomat.Nutzer();
 	this.user.setUserName(uid);
 	this.user.setPassword('mylittlesecret');
-	this.loginUser();
-};
-
-ApiomatAdapter.prototype.loginUser = function() {
-	var that = this;
 	var loaded = false;
 	//that.getAllWatchedVideos();
 	this.user.loadMe({
@@ -42,7 +41,10 @@ ApiomatAdapter.prototype.loginUser = function() {
 
 		},
 		onError : function(error) {
-			that.user.save(saveCB);
+			if (error.statusCode === Apiomat.Status.UNAUTHORIZED) {
+				that.user.save(saveCB);
+			} else
+				_callbacks.onoffline();
 		}
 	});
 	return this;
@@ -88,26 +90,33 @@ ApiomatAdapter.prototype.postAudio = function(_args, _callbacks) {
 			var myNewAudio = new Apiomat.Audio();
 			myNewAudio.setLocationLatitude(_res.coords.latitude);
 			myNewAudio.setLocationLongitude(_res.coords.longitude);
+			myNewAudio.setTitle(_args.title);
+			myNewAudio.setRatio(_args.ratio);
 			myNewAudio.postRecord(_args.blob);
+			console.log(myNewAudio);
 			myNewAudio.save({
-				onOK : function() {
-					_callbacks.onload();
+				onOk : function() {
+					console.log('Info: saving of sound successful');
+					Ti.Media.vibrate();
 					Ti.Android && Ti.UI.createNotification({
 						message : 'Sound erhalten.'
 					}).show();
-					that.user.postmyAudios(myNewAudio, {
+					console.log('Info: try to link audio to user');
+					that.user.postMyAudios(myNewAudio, {
 						onOk : function() {
 							Ti.Android && Ti.UI.createNotification({
 								message : 'Audio erfolgreich gespeichert.'
 							}).show();
 							Ti.Media.vibrate();
+							_callbacks.onOk();
 							console.log('Info: audio uploaded');
 						},
 						onError : function() {
 						}
 					});
 				},
-				onError : function() {
+				onError : function(error) {
+					console.log('Error: ' + error);
 				}
 			});
 		}
@@ -183,6 +192,7 @@ ApiomatAdapter.prototype.getAllPhotos = function(_args, _callbacks) {
 					longitude : photo.getLocationLongitude(),
 					title : photo.getTitle(),
 					thumb : photo.getPhotoURL(100, 100, null, null, 'png'),
+					ratio: photo.getRatio() || 1.3,
 					bigimage : photo.getPhotoURL(Ti.Platform.displayCaps.platformWidth, 0.6 * Ti.Platform.displayCaps.platformWidth, null, null, 'png') ,
 				});
 			}
@@ -208,14 +218,15 @@ ApiomatAdapter.prototype.getAllAudios = function(_args, _callbacks) {
 					? audio.data.id : undefined,
 					latitude : audio.getLocationLatitude(),
 					longitude : audio.getLocationLongitude(),
-					//title : audio.getTitle(),
-					url : audio.getAudioURL() ,
+					title : audio.getTitle(),
+					audiourl : audio.getRecordURL() ,
 				});
 			}
+			console.log(audiolist.length);
 			_callbacks.onload(audiolist);
 		},
 		onError : function(error) {
-			//handle error
+			console.log(error);
 		}
 	});
 

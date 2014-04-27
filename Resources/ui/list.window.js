@@ -20,7 +20,7 @@ exports.create = function() {
 		var self = Ti.UI.createView({
 			top : 0,
 			width : Ti.UI.FILL,
-			height : w * 0.6,
+			height : w / _data.ratio,
 			bottom : 10
 		});
 		var photo = titouchgallery.createTouchGallery({

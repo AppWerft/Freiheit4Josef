@@ -1,12 +1,10 @@
 var AudioRecorder = require("titutorial.audiorecorder");
 var DURATION = 10000;
 exports.create = function() {
-
 	function updateLevel() {
 		if (AudioRecorder.isRecording()) {
 			self.progress.show();
 			var value = parseInt(self.progress.getValue());
-			console.log(value);
 			self.progress.setValue(value + 100);
 			var imgTransform = Ti.UI.create2DMatrix();
 			var level = Math.sqrt(AudioRecorder.getMaxAmplitude()) / 360;
@@ -26,13 +24,12 @@ exports.create = function() {
 			});
 		}
 	}
-
 	var self = require('vendor/window').create({
 		title : 'Freiheit für Josef!',
 		subtitle : 'Audioaufnahme'
 	});
 	self.audioplayer = Ti.Media.createAudioPlayer();
-	self.audiofile = Ti.Filesystem.getFile(Ti.Filesystem.externalStorageDirectory, 'cache', 'file.mp4');
+	self.audiofile = Ti.Filesystem.getFile(Ti.Filesystem.externalStorageDirectory, 'cache', 'file');
 	self.backgroundImage = '/assets/default.png';
 	self.megafon = Ti.UI.createImageView({
 		image : '/assets/megafon.png',
@@ -55,7 +52,6 @@ exports.create = function() {
 		max : DURATION
 	});
 	self.add(self.progress);
-
 	self.megafon.addEventListener('click', function() {
 		//if (AudioRecorder.isRecording()) {
 		self.megafonred.show();
@@ -126,7 +122,9 @@ exports.create = function() {
 						blob : self.audiofile.read(),
 						title: _data.title
 					}, {
-						onload : function() {
+						onOk : function() {
+							self.close();
+							console.log('Info: onOk in window received');
 						}
 					});
 				});

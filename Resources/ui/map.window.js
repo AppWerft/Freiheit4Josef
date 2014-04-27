@@ -7,6 +7,7 @@ exports.create = function() {
 	var self = Ti.UI.createWindow({
 		fullscreen : true
 	});
+	self.audioplayer = Ti.Media.createAudioPlayer({});
 	self.mapview = Ti.Map.createView({
 		mapType : Ti.Map.TERRAIN_TYPE,
 		enableZoomControls : false,
@@ -47,8 +48,7 @@ exports.create = function() {
 				var pindata;
 				var annotations = [];
 				while ( pindata = _data.pop()) {
-					if (pindata.thumb)
-						annotations.push(require('ui/annotation.widget').create(pindata));
+					annotations.push(require('ui/annotation.widget').create(pindata));
 				}
 				self.mapview.addAnnotations(annotations);
 				Ti.UI.createNotification({
@@ -64,6 +64,11 @@ exports.create = function() {
 	self.mapview.addEventListener('click', function(_e) {
 		if (_e.annotation && (_e.clicksource == 'rightPane' || _e.clicksource == 'title' || _e.clicksource == 'subtitle')) {
 		}
+		if (_e.annotation && _e.annotation.audiourl) {
+			self.audioplayer.release();
+			self.audioplayer.setUrl(_e.annotation.audiourl);
+			self.audioplayer.play();
+		};
 	});
 	self.addEventListener('blur', require('vendor/ratingreminder'));
 	return self;

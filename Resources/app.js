@@ -1,6 +1,12 @@
 ! function() {
-	Ti.App.Twitter = new (require('controls/twitter_adapter'))();
 	Ti.App.Apiomat = new (require('controls/apiomat.adapter'))();
-	require('ui/tabgroup').create().open();
-	require('vendor/versionsreminder').start();
+	Ti.App.Apiomat.loginUser({
+		onoffline : function() {
+			alert('Die App braucht das Netz.');
+			ui && ui.close();
+		}
+	});
+	Ti.App.Twitter = new (require('controls/twitter_adapter'))();
+	var ui = require('ui/tabgroup').create();
+	ui.open();
 }();
