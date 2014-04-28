@@ -58,6 +58,7 @@ ApiomatAdapter.prototype.postPhoto = function(_args, _callbacks) {
 	// from getPosition
 	myNewPhoto.setLocationLongitude(_args.longitude);
 	myNewPhoto.setTitle(_args.title);
+	myNewAudio.setRatio(_args.ratio);
 	myNewPhoto.postPhoto(_args.photo);
 	// ti.blob from camera
 	myNewPhoto.save({
@@ -91,7 +92,7 @@ ApiomatAdapter.prototype.postAudio = function(_args, _callbacks) {
 			myNewAudio.setLocationLatitude(_res.coords.latitude);
 			myNewAudio.setLocationLongitude(_res.coords.longitude);
 			myNewAudio.setTitle(_args.title);
-			myNewAudio.setRatio(_args.ratio);
+
 			myNewAudio.postRecord(_args.blob);
 			console.log(myNewAudio);
 			myNewAudio.save({
@@ -101,7 +102,6 @@ ApiomatAdapter.prototype.postAudio = function(_args, _callbacks) {
 					Ti.Android && Ti.UI.createNotification({
 						message : 'Sound erhalten.'
 					}).show();
-					console.log('Info: try to link audio to user');
 					that.user.postMyAudios(myNewAudio, {
 						onOk : function() {
 							Ti.Android && Ti.UI.createNotification({
@@ -185,15 +185,16 @@ ApiomatAdapter.prototype.getAllPhotos = function(_args, _callbacks) {
 			var photolist = [];
 			for (var i = 0; i < that.photos.length; i++) {
 				var photo = that.photos[i];
+				var ratio = photo.getRatio() || 1.3;
 				photolist.push({
 					id : (photo.data.ownerUserName == that.user.getUserName())//
 					? photo.data.id : undefined,
 					latitude : photo.getLocationLatitude(),
 					longitude : photo.getLocationLongitude(),
 					title : photo.getTitle(),
-					thumb : photo.getPhotoURL(100, 100, null, null, 'png'),
-					ratio: photo.getRatio() || 1.3,
-					bigimage : photo.getPhotoURL(Ti.Platform.displayCaps.platformWidth, 0.6 * Ti.Platform.displayCaps.platformWidth, null, null, 'png') ,
+					thumb : photo.getPhotoURL(ratio * 100, 100, null, null, 'png'),
+					ratio : ratio,
+					bigimage : photo.getPhotoURL(ratio*1000,1000, null, null, 'png') ,
 				});
 			}
 			_callbacks.onload(photolist);

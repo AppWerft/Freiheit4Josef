@@ -1,19 +1,6 @@
 var ImageCache = require('vendor/imagecache');
 var titouchgallery = require("com.gbaldera.titouchgallery");
 exports.create = function() {
-	/*function getItem(_pindata) {
-	 var item = {
-	 properties : {
-	 accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_NONE,
-	 backgroundColor : 'white'
-	 },
-	 image : {
-	 image : _pindata.bigimage
-	 }
-	 };
-	 ImageCache(_pindata.image, item.image);
-	 return item;
-	 }*/
 	var lastid = null;
 	function getImage(_data) {
 		var w = Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor;
@@ -21,13 +8,14 @@ exports.create = function() {
 			top : 0,
 			width : Ti.UI.FILL,
 			height : w / _data.ratio,
-			bottom : 10
+			bottom : w / 50
 		});
 		var photo = titouchgallery.createTouchGallery({
+			top : 0,
 			images : [_data.bigimage]
 		});
 		self.add(photo);
-		ImageCache(_data.bigimage, photo);
+		//ImageCache(_data.bigimage, photo);
 		self.add(Ti.UI.createView({
 			backgroundColor : 'black',
 			opacity : 0.6,

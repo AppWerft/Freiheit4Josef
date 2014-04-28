@@ -28,12 +28,11 @@ exports.create = function(_args, _onOK) {
 			Ti.API.info('The cancel button was clicked');
 		} else {
 			data.title = title.getValue();
+			data.ratio = preview.rect.width / preview.rect.height;
 			_onOK(data);
 		}
 	});
 	dialog.show();
 	preview.addEventListener('postlayout', function(_e) {
-		data.ratio = _e.source.rect.width / _e.source.rect.height;
-		console.log(data.ratio);
 	});
 };
