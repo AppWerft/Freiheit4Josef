@@ -15,11 +15,17 @@ var saveCB = {
 // Constructor: ///////////////////////
 ///////////////////////////////////////
 var ApiomatAdapter = function() {
-
+	var callbacks = arguments[1] || {};
+	var xhr = Ti.Network.createHTTPClient({
+		onload : callbacks.ononline,
+		onerror : callbacks.onoffline
+	});
+	xhr.open('HEAD', 'https://apiomat.org/yambas/rest');
+	xhr.send();
 };
 
-ApiomatAdapter.prototype.loginUser = function(_callbacks) {
-	var that = this;
+ApiomatAdapter.prototype.loginUser = function() {
+	var args = arguments[0] || {}, callbacks = arguments[1] || {}, that = this;
 	var uid = (Ti.App.Properties.hasProperty('uid')) ? Ti.App.Properties.getString('uid') : Ti.Utils.md5HexDigest(Ti.Platform.getMacaddress());
 	Ti.App.Properties.setString('uid', uid);
 	Apiomat.Datastore.setOfflineStrategy(Apiomat.AOMOfflineStrategy.USE_OFFLINE_CACHE, {
@@ -44,7 +50,7 @@ ApiomatAdapter.prototype.loginUser = function(_callbacks) {
 			if (error.statusCode === Apiomat.Status.UNAUTHORIZED) {
 				that.user.save(saveCB);
 			} else
-				_callbacks.onoffline();
+				callbacks.onoffline();
 		}
 	});
 	return this;
@@ -52,17 +58,16 @@ ApiomatAdapter.prototype.loginUser = function(_callbacks) {
 
 /* this function will called from camera: */
 ApiomatAdapter.prototype.postPhoto = function(_args, _callbacks) {
-	var that = this;
+	var args = arguments[0] || {}, callbacks = arguments[1] || {}, that = this;
 	var myNewPhoto = new Apiomat.Photo();
-	myNewPhoto.setLocationLatitude(_args.latitude);
+	myNewPhoto.setLocationLatitude(args.latitude);
 	// from getPosition
-	myNewPhoto.setLocationLongitude(_args.longitude);
-	myNewPhoto.setTitle(_args.title);
-	myNewAudio.setRatio(_args.ratio);
-	myNewPhoto.postPhoto(_args.photo);
+	myNewPhoto.setLocationLongitude(args.longitude);
+	myNewPhoto.setTitle(args.title);
 	// ti.blob from camera
 	myNewPhoto.save({
 		onOK : function() {
+			myNewPhoto.postPhoto(args.photo);
 			Ti.Android && Ti.UI.createNotification({
 				message : 'Photo erhalten.'
 			}).show();
@@ -85,19 +90,16 @@ ApiomatAdapter.prototype.postPhoto = function(_args, _callbacks) {
 };
 
 ApiomatAdapter.prototype.postAudio = function(_args, _callbacks) {
-	var that = this;
+	var args = arguments[0] || {}, callbacks = arguments[1] || {}, that = this;
 	Ti.Geolocation.getCurrentPosition(function(_res) {
 		if (!_res.error && _res.success) {
 			var myNewAudio = new Apiomat.Audio();
 			myNewAudio.setLocationLatitude(_res.coords.latitude);
 			myNewAudio.setLocationLongitude(_res.coords.longitude);
-			myNewAudio.setTitle(_args.title);
-
-			myNewAudio.postRecord(_args.blob);
-			console.log(myNewAudio);
+			myNewAudio.setTitle(args.title);
 			myNewAudio.save({
 				onOk : function() {
-					console.log('Info: saving of sound successful');
+					myNewAudio.postRecord(args.blob);
 					Ti.Media.vibrate();
 					Ti.Android && Ti.UI.createNotification({
 						message : 'Sound erhalten.'
@@ -108,7 +110,7 @@ ApiomatAdapter.prototype.postAudio = function(_args, _callbacks) {
 								message : 'Audio erfolgreich gespeichert.'
 							}).show();
 							Ti.Media.vibrate();
-							_callbacks.onOk();
+							callbacks.onOk();
 							console.log('Info: audio uploaded');
 						},
 						onError : function() {
@@ -194,7 +196,7 @@ ApiomatAdapter.prototype.getAllPhotos = function(_args, _callbacks) {
 					title : photo.getTitle(),
 					thumb : photo.getPhotoURL(ratio * 100, 100, null, null, 'png'),
 					ratio : ratio,
-					bigimage : photo.getPhotoURL(ratio*1000,1000, null, null, 'png') ,
+					bigimage : photo.getPhotoURL(ratio * 1000, 1000, null, null, 'png') ,
 				});
 			}
 			_callbacks.onload(photolist);
